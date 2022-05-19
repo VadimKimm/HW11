@@ -67,12 +67,29 @@ class VkProfilePageViewController: UIViewController {
         return label
     }()
 
+    // MARK: - profileButtonsStackView objects
+
+    private lazy var editButton: UIButton = { //
+        let button = UIButton(type: .system)
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Редактировать", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: Metric.editbuttonFontSize, weight: .regular)
+        button.backgroundColor = Colors.editButtonColor
+        button.heightAnchor.constraint(equalToConstant: 34).isActive = true
+        button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: 15).isActive = true
+        button.layer.cornerRadius = 10
+
+        return button
+    }()
     // MARK: - StackViews
 
     private lazy var parentsStackView: UIStackView = {
         let stackView = UIStackView()
 
         stackView.axis = .vertical
+        stackView.spacing = Metric.parentsStackViewSpacing
         stackView.distribution = .equalSpacing
 
         return stackView
@@ -99,6 +116,16 @@ class VkProfilePageViewController: UIViewController {
         return stackView
     }()
 
+    private lazy var profileButtonsStackView: UIStackView = {
+        let stackView = UIStackView()
+
+        stackView.axis = .vertical
+        stackView.spacing = Metric.profileButtonsStackViewSpacing
+        stackView.alignment = .center
+
+        return stackView
+    }()
+
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -110,11 +137,12 @@ class VkProfilePageViewController: UIViewController {
     }
 
     // MARK: - Settings
-    
+
     private func setupHierarchy() {
         view.addSubview(parentsStackView)
 
         parentsStackView.addArrangedSubview(headerStackView)
+        parentsStackView.addArrangedSubview(profileButtonsStackView)
 
         headerStackView.addArrangedSubview(profileImageView)
         headerStackView.addArrangedSubview(headerSideStackView)
@@ -122,6 +150,8 @@ class VkProfilePageViewController: UIViewController {
         headerSideStackView.addArrangedSubview(fullNameLabel)
         headerSideStackView.addArrangedSubview(setStatusButton)
         headerSideStackView.addArrangedSubview(onlineIndicatorLabel)
+
+        profileButtonsStackView.addArrangedSubview(editButton)
     }
 
     private func setupLayout() {
@@ -136,6 +166,8 @@ class VkProfilePageViewController: UIViewController {
         headerSideStackView.translatesAutoresizingMaskIntoConstraints = false
         headerSideStackView.topAnchor.constraint(equalTo: parentsStackView.topAnchor,
                                                  constant: Metric.headerSideStackViewTopOffset).isActive = true
+
+        profileButtonsStackView.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func setupView() {
@@ -150,13 +182,17 @@ extension VkProfilePageViewController {
         static let parentsStackViewLeftOffset: CGFloat = 20
         static let parentsStackViewTopOffset: CGFloat = 25
         static let parentsStackViewRightOffset: CGFloat = -20
+        static let parentsStackViewSpacing: CGFloat = 15
         static let headerSideStackViewTopOffset: CGFloat = 8
+        static let profileButtonsStackViewSpacing: CGFloat = 12
 
         static let headerStackViewSpacing: CGFloat = 12
         static let headerSideStackViewSpacing: CGFloat = -2
 
         static let fullNameLabelFontSize: CGFloat = 19
         static let onlineIndicatorLabelFontSize: CGFloat = 14
+
+        static let editbuttonFontSize: CGFloat = 16
     }
 
     enum Strings {
@@ -168,6 +204,8 @@ extension VkProfilePageViewController {
         static let backgroundColor = UIColor(red:  25.0 / 255.0, green: 25.0 / 255.0, blue:  25.0 / 255.0, alpha: 1)
         static let customGray = UIColor(red:  166.0 / 255.0, green: 176.0 / 255.0, blue:  188.0 / 255.0, alpha: 1)
         static let customBlue = UIColor(red:  139 / 255.0, green: 182 / 255.0, blue:  255 / 255.0, alpha: 1)
+
+        static let editButtonColor = UIColor(red:  45 / 255.0, green: 45 / 255.0, blue:  45 / 255.0, alpha: 1)
     }
 }
 
