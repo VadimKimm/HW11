@@ -83,6 +83,14 @@ class VkProfilePageViewController: UIViewController {
 
         return button
     }()
+
+    // MARK: - mediaButtonsStackView objects
+
+    private lazy var storyButton = createMediaButton(with: "История", andImage: "camera")
+    private lazy var postButton = createMediaButton(with: "Запись", andImage: "square.and.pencil")
+    private lazy var photoButton = createMediaButton(with: "Фото", andImage: "photo")
+    private lazy var clipButton = createMediaButton(with: "Клип", andImage: "video.and.waveform")
+
     // MARK: - StackViews
 
     private lazy var parentsStackView: UIStackView = {
@@ -116,11 +124,21 @@ class VkProfilePageViewController: UIViewController {
         return stackView
     }()
 
+    //Includes editButton and mediaButtonsStackView
     private lazy var profileButtonsStackView: UIStackView = {
         let stackView = UIStackView()
 
         stackView.axis = .vertical
         stackView.spacing = Metric.profileButtonsStackViewSpacing
+        stackView.alignment = .center
+
+        return stackView
+    }()
+
+    private lazy var mediaButtonsStackView: UIStackView = {
+        let stackView = UIStackView()
+
+        stackView.axis = .horizontal
         stackView.alignment = .center
 
         return stackView
@@ -152,6 +170,12 @@ class VkProfilePageViewController: UIViewController {
         headerSideStackView.addArrangedSubview(onlineIndicatorLabel)
 
         profileButtonsStackView.addArrangedSubview(editButton)
+        profileButtonsStackView.addArrangedSubview(mediaButtonsStackView)
+
+        mediaButtonsStackView.addArrangedSubview(storyButton)
+        mediaButtonsStackView.addArrangedSubview(postButton)
+        mediaButtonsStackView.addArrangedSubview(photoButton)
+        mediaButtonsStackView.addArrangedSubview(clipButton)
     }
 
     private func setupLayout() {
@@ -168,10 +192,41 @@ class VkProfilePageViewController: UIViewController {
                                                  constant: Metric.headerSideStackViewTopOffset).isActive = true
 
         profileButtonsStackView.translatesAutoresizingMaskIntoConstraints = false
+
+        mediaButtonsStackView.translatesAutoresizingMaskIntoConstraints = false
+        mediaButtonsStackView.leadingAnchor.constraint(equalTo: parentsStackView.leadingAnchor,
+                                                       constant: Metric.mediaButtonsStackViewSpacing).isActive = true
     }
 
     private func setupView() {
         view.backgroundColor = Colors.backgroundColor
+    }
+
+    // MARK: - Private functions
+
+    private func createMediaButton(with title: String, andImage image: String) -> UIButton {
+        let button = UIButton()
+        var buttonConfig = UIButton.Configuration.plain()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: Metric.buttonImagePointSize,
+                                                      weight: .medium,
+                                                      scale: .large)
+        let image = UIImage(systemName: image, withConfiguration: imageConfig)
+        var buttonText = AttributedString(title)
+
+        buttonText.font = UIFont.systemFont(ofSize: Metric.mediaButtonFontSize, weight: .medium)
+
+        buttonConfig.buttonSize = .small
+        buttonConfig.baseForegroundColor = Colors.customBlue
+        buttonConfig.image = image
+        buttonConfig.imagePlacement = .top
+        buttonConfig.imagePadding = 8
+        buttonConfig.attributedTitle = buttonText
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.configuration = buttonConfig
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+
+        return button
     }
 }
 
@@ -185,6 +240,7 @@ extension VkProfilePageViewController {
         static let parentsStackViewSpacing: CGFloat = 15
         static let headerSideStackViewTopOffset: CGFloat = 8
         static let profileButtonsStackViewSpacing: CGFloat = 12
+        static let  mediaButtonsStackViewSpacing: CGFloat = -5
 
         static let headerStackViewSpacing: CGFloat = 12
         static let headerSideStackViewSpacing: CGFloat = -2
@@ -193,6 +249,9 @@ extension VkProfilePageViewController {
         static let onlineIndicatorLabelFontSize: CGFloat = 14
 
         static let editbuttonFontSize: CGFloat = 16
+        static let mediaButtonFontSize: CGFloat = 12
+
+        static let buttonImagePointSize: CGFloat = 17
     }
 
     enum Strings {
