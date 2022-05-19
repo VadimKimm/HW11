@@ -22,6 +22,15 @@ class VkProfilePageViewController: UIViewController {
         return imageView
     }()
 
+    private lazy var separatorLine: UIView = {
+        let separator = UIView()
+
+        separator.heightAnchor.constraint(equalToConstant: 0.2).isActive = true
+        separator.backgroundColor = Colors.customGray
+
+        return separator
+    }()
+
     // MARK: - headerSideStackView objects
 
     private lazy var fullNameLabel: UILabel = {
@@ -84,6 +93,33 @@ class VkProfilePageViewController: UIViewController {
         return button
     }()
 
+    // MARK: - additionalProfileInfoStackView objects
+
+    private lazy var cityButton = createAdditionalInfoButton(with: "Москва",
+                                                             andImage: "house",
+                                                             color: Colors.customGray,
+                                                             isACity: true)
+
+    private lazy var followersButton = createAdditionalInfoButton(with: "35 подписчиков",
+                                                                  andImage: "dot.radiowaves.up.forward",
+                                                                  color: Colors.customGray)
+
+    private lazy var jobButton = createAdditionalInfoButton(with: "Указать место работы",
+                                                            andImage: "bag",
+                                                            color: Colors.customBlue)
+
+    private lazy var giftButton = createAdditionalInfoButton(with: "Получить подарок >",
+                                                            andImage: "gift",
+                                                            color: Colors.customPurple)
+
+    private lazy var detailedInformationButton =  createAdditionalInfoButton(with: "Подробная информация",
+                                                                             andImage: "info.circle.fill",
+                                                                             color: .white,
+                                                                             textButtonFont: UIFont.systemFont(
+                                                                                ofSize: Metric.additionalInfoButtonFontSize,
+                                                                                weight: .regular)
+    )
+
     // MARK: - mediaButtonsStackView objects
 
     private lazy var storyButton = createMediaButton(with: "История", andImage: "camera")
@@ -144,6 +180,16 @@ class VkProfilePageViewController: UIViewController {
         return stackView
     }()
 
+    private lazy var additionalProfileInfoStackView: UIStackView = {
+        let stackView = UIStackView()
+
+        stackView.axis = .vertical
+        stackView.distribution = .equalSpacing
+        stackView.alignment = .leading
+
+        return stackView
+    }()
+
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -161,6 +207,8 @@ class VkProfilePageViewController: UIViewController {
 
         parentsStackView.addArrangedSubview(headerStackView)
         parentsStackView.addArrangedSubview(profileButtonsStackView)
+        parentsStackView.addArrangedSubview(separatorLine)
+        parentsStackView.addArrangedSubview(additionalProfileInfoStackView)
 
         headerStackView.addArrangedSubview(profileImageView)
         headerStackView.addArrangedSubview(headerSideStackView)
@@ -176,6 +224,12 @@ class VkProfilePageViewController: UIViewController {
         mediaButtonsStackView.addArrangedSubview(postButton)
         mediaButtonsStackView.addArrangedSubview(photoButton)
         mediaButtonsStackView.addArrangedSubview(clipButton)
+
+        additionalProfileInfoStackView.addArrangedSubview(cityButton)
+        additionalProfileInfoStackView.addArrangedSubview(followersButton)
+        additionalProfileInfoStackView.addArrangedSubview(jobButton)
+        additionalProfileInfoStackView.addArrangedSubview(giftButton)
+        additionalProfileInfoStackView.addArrangedSubview(detailedInformationButton)
     }
 
     private func setupLayout() {
@@ -196,6 +250,16 @@ class VkProfilePageViewController: UIViewController {
         mediaButtonsStackView.translatesAutoresizingMaskIntoConstraints = false
         mediaButtonsStackView.leadingAnchor.constraint(equalTo: parentsStackView.leadingAnchor,
                                                        constant: Metric.mediaButtonsStackViewSpacing).isActive = true
+
+        separatorLine.translatesAutoresizingMaskIntoConstraints = false
+        separatorLine.topAnchor.constraint(equalTo: mediaButtonsStackView.bottomAnchor,
+                                           constant: Metric.separatorLineTopOffset).isActive = true
+
+        additionalProfileInfoStackView.translatesAutoresizingMaskIntoConstraints = false
+        additionalProfileInfoStackView.topAnchor.constraint(equalTo: separatorLine.bottomAnchor,
+                                                            constant: Metric.additionalProfileInfoStackViewTopOffset).isActive = true
+        additionalProfileInfoStackView.leadingAnchor.constraint(equalTo: parentsStackView.leadingAnchor,
+                                                                constant: -8).isActive = true
     }
 
     private func setupView() {
@@ -228,6 +292,40 @@ class VkProfilePageViewController: UIViewController {
 
         return button
     }
+
+    private func createAdditionalInfoButton(with title: String,
+                                            andImage image: String,
+                                            color: UIColor,
+                                            isACity: Bool = false,
+                                            textButtonFont: UIFont = .systemFont(ofSize: Metric.additionalInfoButtonFontSize,
+                                                                                 weight: .regular)) -> UIButton {
+        let button = UIButton()
+        var buttonConfig = UIButton.Configuration.plain()
+        var buttonText = AttributedString(isACity ? "Город: \(title)" : title)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: Metric.buttonImagePointSize,
+                                                            weight: .regular,
+                                                            scale: .small)
+        let image = UIImage(systemName: image, withConfiguration: imageConfig)
+
+        buttonText.font = textButtonFont
+
+        buttonConfig.buttonSize = .medium
+        buttonConfig.baseForegroundColor = color
+        buttonConfig.image = image
+        buttonConfig.imagePlacement = .leading
+        buttonConfig.attributedTitle = buttonText
+
+        if isACity {
+            buttonConfig.imagePadding = 8
+        } else {
+            buttonConfig.imagePadding = 13
+        }
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.configuration = buttonConfig
+
+        return button
+    }
 }
 
 // MARK: - Constants
@@ -237,10 +335,14 @@ extension VkProfilePageViewController {
         static let parentsStackViewLeftOffset: CGFloat = 20
         static let parentsStackViewTopOffset: CGFloat = 25
         static let parentsStackViewRightOffset: CGFloat = -20
-        static let parentsStackViewSpacing: CGFloat = 15
         static let headerSideStackViewTopOffset: CGFloat = 8
+        static let separatorLineTopOffset: CGFloat = 12
+        static let additionalProfileInfoStackViewTopOffset: CGFloat = 12
+        static let additionalProfileInfoStackViewLeftOffset: CGFloat = -8
+
+        static let parentsStackViewSpacing: CGFloat = 15
         static let profileButtonsStackViewSpacing: CGFloat = 12
-        static let  mediaButtonsStackViewSpacing: CGFloat = -5
+        static let mediaButtonsStackViewSpacing: CGFloat = -5
 
         static let headerStackViewSpacing: CGFloat = 12
         static let headerSideStackViewSpacing: CGFloat = -2
@@ -250,6 +352,7 @@ extension VkProfilePageViewController {
 
         static let editbuttonFontSize: CGFloat = 16
         static let mediaButtonFontSize: CGFloat = 12
+        static let additionalInfoButtonFontSize: CGFloat = 14
 
         static let buttonImagePointSize: CGFloat = 17
     }
@@ -263,6 +366,7 @@ extension VkProfilePageViewController {
         static let backgroundColor = UIColor(red:  25.0 / 255.0, green: 25.0 / 255.0, blue:  25.0 / 255.0, alpha: 1)
         static let customGray = UIColor(red:  166.0 / 255.0, green: 176.0 / 255.0, blue:  188.0 / 255.0, alpha: 1)
         static let customBlue = UIColor(red:  139 / 255.0, green: 182 / 255.0, blue:  255 / 255.0, alpha: 1)
+        static let customPurple = UIColor(red:  115 / 255.0, green: 104 / 255.0, blue:  185 / 255.0, alpha: 1)
 
         static let editButtonColor = UIColor(red:  45 / 255.0, green: 45 / 255.0, blue:  45 / 255.0, alpha: 1)
     }
